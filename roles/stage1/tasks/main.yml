@@ -6,41 +6,41 @@
 #convert to upper case
 
 - name: Make upper.py executable
-  shell: chmod u+x upper.py
+  shell: chmod u+x scripts/upper.py
   delegate_to: localhost 
 
-- name: Remove the header of the windows.csv
-  shell: awk 'FNR > 1 { print  $0 }' windows.csv > upper.txt
+- name: Remove the header of the wins.csv
+  shell: awk 'FNR > 1 { print  $0 }' wins.csv > upper.txt
   delegate_to: localhost 
 
 - name: Convert all hostname to uppercase
-  shell: ./upper.py upper.txt
+  shell: ./scripts/upper.py upper.txt
   delegate_to: localhost 
   
-- name: Create windows.csv header 
-  shell: echo Hostname,IPAddress > windows.csv
+- name: Create wins.csv header 
+  shell: echo Hostname,IPAddress > wins.csv
   delegate_to: localhost 
   
-- name: Put back the rest to windows.csv
-  shell: cat upper.txt >> windows.csv
+- name: Put back the rest to wins.csv
+  shell: cat upper.txt >> wins.csv
   delegate_to: localhost
    
   
 #add comma at the end
 - name: Make create-comma.sh executable
-  shell: chmod u+x create-comma.sh
+  shell: chmod u+x scripts/create-comma.sh
   delegate_to: localhost
 
 - name: Make combine.py executable
-  shell: chmod u+x combine.py
+  shell: chmod u+x scripts/combine.py
   delegate_to: localhost
   
 - name: Create comma at the end 1
-  shell: ./create-comma.sh
+  shell: ./scripts/create-comma.sh
   delegate_to: localhost
 
 - name: Create comma at the end 2
-  shell: ./combine.py > temp003
+  shell: ./scripts/combine.py > temp003
   delegate_to: localhost
 #add comma at the end
    
