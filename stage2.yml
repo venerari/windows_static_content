@@ -1,0 +1,24 @@
+---
+
+- hosts: all
+  become_method: runas
+  gather_facts: false
+  
+   
+  vars_prompt: 
+    - name: "env1"
+      prompt: "What is the environment [e.g. UAT1 or DEV1]?"
+      default: "UAT1"
+      private: no
+    - name: "app1"
+      prompt: "What is the Application Name [e.g. aris or dcp]?"
+      default: "aris"
+      private: no
+    - name: "zipappname"
+      prompt: "What is the Zip App Name [e.g. arisWeb_StaticContent.zip]?"
+      default: "arisWeb_StaticContent.zip"
+      private: no
+            
+
+  roles:
+    - stage2 

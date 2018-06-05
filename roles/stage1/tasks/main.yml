@@ -1,0 +1,127 @@
+---
+
+- name: Include vars.yml
+  include_vars: vars.yml
+
+#convert to upper case
+
+- name: Make upper.py executable
+  shell: chmod u+x upper.py
+  delegate_to: localhost 
+
+- name: Remove the header of the windows.csv
+  shell: awk 'FNR > 1 { print  $0 }' windows.csv > upper.txt
+  delegate_to: localhost 
+
+- name: Convert all hostname to uppercase
+  shell: ./upper.py upper.txt
+  delegate_to: localhost 
+  
+- name: Create windows.csv header 
+  shell: echo Hostname,IPAddress > windows.csv
+  delegate_to: localhost 
+  
+- name: Put back the rest to windows.csv
+  shell: cat upper.txt >> windows.csv
+  delegate_to: localhost
+   
+  
+#add comma at the end
+- name: Make create-comma.sh executable
+  shell: chmod u+x create-comma.sh
+  delegate_to: localhost
+
+- name: Make combine.py executable
+  shell: chmod u+x combine.py
+  delegate_to: localhost
+  
+- name: Create comma at the end 1
+  shell: ./create-comma.sh
+  delegate_to: localhost
+
+- name: Create comma at the end 2
+  shell: ./combine.py > temp003
+  delegate_to: localhost
+#add comma at the end
+   
+
+- name: Create {{ inv_file }} inventory 1
+  shell: printf "\tASDF\n" | awk -F',' '$1' temp003 > temp0  
+  delegate_to: localhost
+       
+- name: Create {{ inv_file }} inventory 2
+  shell: awk -F',' 'FNR > 1 { print  $2 " ansible_host="$1 }' temp0 > temp
+  delegate_to: localhost
+  
+- name: Create {{ inv_file }} inventory 3.1
+  shell: echo [windows] > inventory/{{ inv_file }}
+  delegate_to: localhost   
+  
+- name: Create {{ inv_file }} inventory 3.2
+  shell: awk NF temp > temp0001
+  delegate_to: localhost
+    
+- name: Create {{ inv_file }} inventory 5
+  shell: cat temp0001 | sort >> inventory/{{ inv_file }}
+  delegate_to: localhost
+    
+
+#- meta: end_play
+
+- name: Create {{ inv_file }} inventory 4.1
+  shell: echo > tempwins
+  delegate_to: localhost  
+
+- name: Create {{ inv_file }} inventory 4.2
+  shell: echo [windows:vars] >> tempwins
+  delegate_to: localhost   
+    
+- name: Create {{ inv_file }} inventory 5
+  shell: echo ansible_user={{ win_ansible_user }} >> tempwins
+  delegate_to: localhost
+   
+- name: Create {{ inv_file }} inventory 5.1
+  shell: echo ansible_password={{ win_ansible_password }} >> tempwins
+  delegate_to: localhost   
+
+- name: Create {{ inv_file }} inventory 6
+  shell: echo ansible_connection={{ win_ansible_connection }} >> tempwins
+  delegate_to: localhost
+    
+- name: Create {{ inv_file }} inventory 7
+  shell: echo ansible_winrm_transport={{ win_ansible_winrm_transport }} >> tempwins
+  delegate_to: localhost
+  
+- name: Create {{ inv_file }} inventory 8
+  shell: echo ansible_winrm_server_cert_validation={{ win_ansible_winrm_server_cert_validation }} >> tempwins
+  delegate_to: localhost   
+  when: win_ansible_winrm_transport == "basic"
+
+- name: Create {{ inv_file }} inventory 8.1
+  shell: echo ansible_port={{ win_ansible_port }} >> tempwins
+  delegate_to: localhost  
+  when: win_ansible_winrm_transport == "kerberos"
+
+- name: Create {{ inv_file }} inventory 9
+  shell: cat tempwins >> inventory/{{ inv_file }}
+  delegate_to: localhost
+
+   
+- name: Create variables  1
+  shell: cp scripts/static_deploy.properties roles/stage2/vars/common.bak
+  delegate_to: localhost  
+  
+- name: Remove the header of the common.yml
+  shell: awk 'FNR > 1 { print  $0 }' roles/stage2/vars/common.bak > roles/stage2/vars/common.yml
+  delegate_to: localhost   
+
+- name: Create variables  2
+  shell: "sed -i 's/=/: /g' roles/stage2/vars/common.yml"
+  delegate_to: localhost  
+
+- name: Delete temp files
+  shell: rm temp* upper.txt comma.csv; rm roles/stage2/vars/common.bak
+  delegate_to: localhost
+   
+    
+  

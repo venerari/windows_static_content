@@ -1,0 +1,4 @@
+*.retry
+wins.ini
+ansible.log
+*.zip

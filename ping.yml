@@ -1,0 +1,16 @@
+---
+
+- hosts: all
+  become: false
+  tasks: 
+  
+        #- name: kinit
+        #  local_action: command echo "Clark123456" | kinit -l 7d -r 7d -pf user1@TEST001.ORG
+  
+        - name: ping
+          ping:
+          when: ansible_os_family == "RedHat"
+  
+        - name: win ping
+          win_ping:
+          when: not(ansible_os_family == "RedHat")
