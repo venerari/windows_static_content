@@ -5,7 +5,7 @@
   tasks: 
   
         #- name: kinit
-        #  local_action: command echo "Clark123456" | kinit -l 7d -r 7d -pf user1@TEST001.ORG
+        #  local_action: command echo "xxxxxxxxxxx" | kinit -l 7d -r 7d -pf user1@DOMAIN.ORG
   
         - name: ping
           ping:

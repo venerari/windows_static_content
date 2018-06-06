@@ -28,19 +28,19 @@
   
 #add comma at the end
 - name: Make create-comma.sh executable
-  shell: chmod u+x scripts/create-comma.sh
+  shell: chmod u+x scripts/create-comma2.sh
   delegate_to: localhost
 
 - name: Make combine.py executable
-  shell: chmod u+x scripts/combine.py
+  shell: chmod u+x scripts/combine2.py
   delegate_to: localhost
   
 - name: Create comma at the end 1
-  shell: ./scripts/create-comma.sh
+  shell: ./scripts/create-comma2.sh
   delegate_to: localhost
 
 - name: Create comma at the end 2
-  shell: ./scripts/combine.py > temp003
+  shell: ./scripts/combine2.py > temp003
   delegate_to: localhost
 #add comma at the end
    
@@ -120,8 +120,6 @@
   delegate_to: localhost  
 
 - name: Delete temp files
-  shell: rm temp* upper.txt comma.csv; rm roles/stage2/vars/common.bak
+  shell: rm -f temp* upper.txt comma2.csv; rm roles/stage2/vars/common.bak
   delegate_to: localhost
    
-    
-  
